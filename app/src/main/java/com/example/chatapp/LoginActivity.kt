@@ -9,9 +9,9 @@ import android.widget.*
 import androidx.appcompat.widget.AppCompatButton
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
-import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.AuthResult
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 
 
@@ -19,7 +19,7 @@ import com.google.firebase.auth.FirebaseAuth
 class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login_emanat)
+        setContentView(R.layout.activity_login)
 
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
 
@@ -36,10 +36,16 @@ class LoginActivity : AppCompatActivity() {
 
         loginBtn.setOnClickListener {
 
-            if(mail.editText?.text?.isNotEmpty() == true && passsword.editText?.text?.isNotEmpty() == true){
+            val mailCredential = mail.editText?.text.toString()
+            val passwordCredential = passsword.editText?.text.toString()
+
+            if(mailCredential.isNotEmpty() == true && passwordCredential.isNotEmpty() == true){
                 showProgressbar()
 
-                FirebaseAuth.getInstance().signInWithEmailAndPassword(mail.editText!!.text.toString(), passsword.editText!!.text.toString())
+
+                val credential = EmailAuthProvider.getCredential(mailCredential,passwordCredential)
+
+                FirebaseAuth.getInstance().signInWithCredential(credential)
                     .addOnCompleteListener(object:OnCompleteListener<AuthResult> {
                         override fun onComplete(p0: Task<AuthResult>) {
                             if(p0.isSuccessful){
